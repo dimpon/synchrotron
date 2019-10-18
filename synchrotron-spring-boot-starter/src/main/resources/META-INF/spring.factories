@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration = org.synchrotron.autoconfigure.SynchrotronAutoConfiguration
+#org.springframework.boot.diagnostics.FailureAnalyzer = ru.tinkoff.eclair.autoconfigure.EclairFailureAnalyzer
