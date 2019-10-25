@@ -8,8 +8,6 @@
 
     <artifactId>synchrotron-spring-boot-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
-
     <name>Synchrotron Spring Boot Starter</name>
     <description>Spring Boot starter, including auto-configuration</description>
 
@@ -42,5 +40,17 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>
