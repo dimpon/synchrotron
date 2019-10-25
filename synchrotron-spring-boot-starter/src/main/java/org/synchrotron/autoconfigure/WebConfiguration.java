@@ -20,11 +20,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/one/**").addResourceLocations("classpath:/one/").setCachePeriod(3600).resourceChain(true)
+		registry.addResourceHandler("/synchrotron/**").addResourceLocations("classpath:/static/").setCachePeriod(3600).resourceChain(true)
 				.addResolver(new EncodedResourceResolver()).addResolver(new PathResourceResolver());
 
 /*		registry
-				.addResourceHandler("/resources/one")
+				.addResourceHandler("/resources/static")
 				.addResourceLocations("/src/main/webapp/index.html");*/
 	}
 

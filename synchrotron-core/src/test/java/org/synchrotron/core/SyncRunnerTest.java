@@ -171,7 +171,7 @@ public class SyncRunnerTest {
 
 		final Object lock = new Object();
 
-		//this code guarantee that one() is always the first
+		//this code guarantee that static() is always the first
 		final AtomicBoolean flag = new AtomicBoolean(true);
 		Runnable runMe = () -> {
 			Void v = (flag.getAndSet(!flag.get())) ? mock.one() : mock.two();
@@ -204,7 +204,7 @@ public class SyncRunnerTest {
 		SyncRunner runner = new SyncRunnerImpl(executor);
 		final Object lock = new Object();
 
-		//this code guarantee that one() is always the first
+		//this code guarantee that static() is always the first
 		final AtomicBoolean flag = new AtomicBoolean(true);
 		Runnable runMe = () -> {
 			Void v = (flag.getAndSet(!flag.get())) ? mock.one() : mock.two();
