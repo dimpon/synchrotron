@@ -149,7 +149,7 @@ public class SyncRunnerTest {
 
 		//Assert.
 		//There is 3 threads running in parallel.
-		//CyclicBarrier calls barrier() each time when 3rd thread calls zero() (e.g. 3 times)
+		//CyclicBarrier calls barrier() each time and 3rd thread calls zero() (e.g. 3 times)
 		InOrder order = Mockito.inOrder(mock);
 		order.verify(mock, times(3)).zero();
 		order.verify(mock, times(1)).barrier();
