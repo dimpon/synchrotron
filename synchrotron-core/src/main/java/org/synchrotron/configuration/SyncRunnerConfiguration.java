@@ -1,12 +1,14 @@
 package org.synchrotron.configuration;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
 
 //@Setter
 //@Accessors(fluent = true, chain = true)
-public class SyncRunnerConfiguration implements SyncRulesFactory {
+public class SyncRunnerConfiguration implements SyncRulesFor {
 
 	/*public <T> Rule<T> rulesForKey(Class<T> clazz) {
 		return new Rule<>(clazz);
@@ -14,89 +16,52 @@ public class SyncRunnerConfiguration implements SyncRulesFactory {
 
 	static BiPredicate<String, String> bothA = (a, b) -> a.equalsIgnoreCase("a") && a.equalsIgnoreCase("b");
 	static BiPredicate<String, String> bothB = (a, b) -> b.equalsIgnoreCase("a") && b.equalsIgnoreCase("b");
+	static BiPredicate<String, String> bothBb = (a, b) -> b.equalsIgnoreCase("a") && b.equalsIgnoreCase("b");
 	static BiPredicate<String, String> bothC = (a, b) -> b.equalsIgnoreCase("c") && b.equalsIgnoreCase("c");
+	private ConcurrentHashMap<Class<?>, Set<SyncRules<?, ?>>> rules = new ConcurrentHashMap<>();
 
 	public static void main(String[] args) {
 
-		SyncRunnerConfiguration strategy = new SyncRunnerConfiguration();
+		SyncRunnerConfiguration config = new SyncRunnerConfiguration();
 
-		strategy
+		config
 				.rulesFor(String.class)
-				.whenFindType(String.class)
-				.and(bothA.or(bothB).or(bothC))
+				.andFor(String.class)
+				.when(bothA.or(bothB.and(bothBb)).or(bothC))
 				.then(SyncRunnerStrategy.PUT_TO_QUEUE)
 
-				.whenFindType(Integer.class).and((s, i) -> s.length() == i).then(SyncRunnerStrategy.REJECT);
+				.rulesFor(String.class)
+				.andFor(Integer.class)
+				.when((s, i) -> s.length() == i)
+				.then(SyncRunnerStrategy.REJECT);
 
-		strategy
+		config
 				.rulesFor(BigDecimal.class)
-				.when((b, o) -> o.equals(b)).then(SyncRunnerStrategy.INHERIT_RESULT)
+				.when((b, o) -> o.equals(b))
+				.then(SyncRunnerStrategy.INHERIT_RESULT);
 
-				.rulesFor(Array.class);
+		System.out.printf("");
 
+	}
 
-
-
-
-
-
-		/*BiPredicate<String, String> bothStartsWithA = (a, b) -> a.startsWith("A") && b.startsWith("A");
-
-		SyncRunnerConfiguration strategy = new SyncRunnerConfiguration()
-
-				.rulesForKey(String.class)
-				.and(String.class)
-				.and((a, b) -> a.length() == b.length())
-				.and(bothStartsWithA.and(bothStartsWithA).or(bothStartsWithA))
-
-				.then(SyncRunnerStrategy.PUT_TO_QUEUE)
-
-				.rulesForKey(Integer.class)
-				.and(Integer.class)
-				.and(Integer::equals).then(SyncRunnerStrategy.INHERIT_RESULT);
-
-		Object d = new Object();
-
-		Class<Object> c = Object.class;
-
-		boolean instance = c.isInstance(d);
-*/
+	<T> void addRule(Class<T> clazz, SyncRules<T, ?> rule) {
+		rules.compute(clazz, (aClass, rules) -> {
+			if (rules != null) {
+				rules.add(rule);
+				return rules;
+			} else {
+				Set<SyncRules<?, ?>> newRules = new HashSet<>();
+				newRules.add(rule);
+				return newRules;
+			}
+		});
 	}
 
 	@Override
-	public <T> SyncRuleWhenType<T, Object> rulesFor(Class<T> clazz) {
-		return new SyncRules<>();
+	public <T> SyncRuleAndFor<T, Object> rulesFor(Class<T> clazz) {
+		SyncRules<T, Object> rule = new SyncRules<>(this);
+		rule.rulesFor = clazz;
+		return rule;
 	}
 
-	/*enum SyncRunnerStrategy {
-		PUT_TO_QUEUE,
-		INHERIT_RESULT,
-		REJECT
-	}
-
-	@AllArgsConstructor
-	class Rule<T> {
-		private Class<T> keyClass;
-
-		public <K> SubRule<T, K> and(Class<K> clazz) {
-			return new SubRule<>(clazz);
-		}
-
-		@AllArgsConstructor
-		class SubRule<T, K> {
-
-			private Class<K> otherClass;
-
-			public SubRule<T, K> and(BiPredicate<T, K> predicate) {
-				return this;
-			}
-
-			public SyncRunnerConfiguration then(SyncRunnerStrategy strategy) {
-				return SyncRunnerConfiguration.this;
-			}
-
-		}
-
-	}
-*/
 }

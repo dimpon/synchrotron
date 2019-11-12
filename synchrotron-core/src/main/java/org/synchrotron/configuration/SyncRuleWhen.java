@@ -1,10 +1,6 @@
 package org.synchrotron.configuration;
-
 import java.util.function.BiPredicate;
 
-public interface SyncRuleWhenType<T, K> extends SyncRulesFactory{
-	<C> SyncRuleCondition<T, C> whenFindType(Class<C> clazz);
-
+public interface SyncRuleWhen<T,K> {
 	SyncRuleThen<T,K> when(BiPredicate<T, K> predicate);
-
 }
