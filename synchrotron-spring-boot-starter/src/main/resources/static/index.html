@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Async tasks control panel</title>
+    <link href="bootstrap.min.css" rel="stylesheet">
     <script>
-        var webSocket = new WebSocket('ws://localhost:8080/gs-guide-websocket');
+        var webSocket = new WebSocket('ws://localhost:8080/synchrotron//name');
 
         webSocket.onopen = event => {
             alert('onopen');
@@ -13,6 +14,9 @@
 
         webSocket.onmessage = event => {
             alert('onmessage, ' + event.data);
+
+            document.getElementById("greetings").innerHTML = "Page hostname is " + window.location.hostname;
+
         };
 
         webSocket.onclose = event => {
@@ -21,6 +25,28 @@
     </script>
 </head>
 <body>
-hello one classpath
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">Here you can see async tasks</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="conversation" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Greetings</th>
+            </tr>
+            </thead>
+            <tbody id="greetings">
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>
