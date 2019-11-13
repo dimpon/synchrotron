@@ -22,26 +22,26 @@ public class SyncRunnerConfigurationImpl implements SyncRunnerConfiguration {
 
 	public static void main(String[] args) {
 
-		SyncRunnerConfiguration config = new SyncRunnerConfigurationImpl();
+		SyncRunnerConfiguration config = new SyncRunnerConfigurationImpl()
 
-
-		config
 				.newRule()
 				.ruleFor(String.class)
 				.andFor(String.class)
-				.when(bothA.or(bothB.and(bothBb)).or(bothC))
+				.when(bothA
+						.or(bothB.and(bothBb))
+						.or(bothC))
 				.then(SyncRunnerStrategy.PUT_TO_QUEUE)
 
 				.newRule("new rule")
 				.ruleFor(String.class)
 				.andFor(Integer.class)
 				.when((s, i) -> s.length() == i)
-				.then(SyncRunnerStrategy.REJECT);
+				.then(SyncRunnerStrategy.REJECT)
 
-		config
 				.newRule()
 				.ruleFor(BigDecimal.class)
-				.when((b, o) -> o.equals(b))
+
+				.when((BigDecimal b, Object o) -> o.equals(b))
 				.then(SyncRunnerStrategy.INHERIT_RESULT);
 
 		System.out.printf("");
@@ -68,6 +68,6 @@ public class SyncRunnerConfigurationImpl implements SyncRunnerConfiguration {
 
 	@Override
 	public SyncRulesFor newRule(String name) {
-		return  new SyncRules<Object, Object>(name, this);
+		return new SyncRules<Object, Object>(name, this);
 	}
 }
